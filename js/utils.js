@@ -35,15 +35,61 @@
 // }
 //
 
+import { CELL_VALUE, GAME_STATUS } from './constants.js';
+
 // Input: an array of 9 items
 // Output: an object as mentioned above
 export function checkGameStatus(cellValues) {
   // Write your code here ...
   // Please feel free to add more helper function if you want.
   // It's not required to write everything just in this function.
+  if (!Array.isArray(cellValues) || cellValues.length !== 25) {
+    throw new Error('Invalid cell vales');
+  }
 
+  const checkSetList = [
+    [0, 1, 2, 3, 4],
+    [5, 6, 7, 8, 9],
+    [10, 11, 12, 13, 14],
+    [15, 16, 17, 18, 19],
+    [20, 21, 22, 23, 24],
+
+    [0, 5, 10, 15, 20],
+    [1, 6, 11, 16, 21],
+    [2, 7, 12, 17, 22],
+    [3, 8, 13, 18, 23],
+    [4, 9, 14, 19, 24],
+
+    [0, 6, 12, 18, 24],
+    [4, 8, 12, 16, 20],
+  ];
+
+  // win
+  const winSetIndex = checkSetList.findIndex((set) => {
+    const first = cellValues[set[0]];
+    const second = cellValues[set[1]];
+    const third = cellValues[set[2]];
+    const fourth = cellValues[set[3]];
+    const fifth = cellValues[set[4]];
+
+    return (
+      first !== '' && first === second && second === third && third === fourth && fourth === fifth
+    );
+  });
+
+  if (winSetIndex >= 0) {
+    const winValueIndex = checkSetList[winSetIndex][1];
+    const winValue = cellValues[winValueIndex];
+    return {
+      status: winValue === CELL_VALUE.CIRCLE ? GAME_STATUS.O_WIN : GAME_STATUS.X_WIN,
+      winPositions: checkSetList[winSetIndex],
+    };
+  }
+  // end
+  // playing
+  const isEndGame = cellValues.filter((x) => x === '').length === 0;
   return {
-    status: GAME_STATUS.PLAYING,
+    status: isEndGame ? GAME_STATUS.ENDED : GAME_STATUS.PLAYING,
     winPositions: [],
   };
 }

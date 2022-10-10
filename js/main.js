@@ -1,11 +1,19 @@
-import { TURN } from './constants.js';
-import { getCellElementList, getCurrentTurnElement } from './selectors.js';
+import { CELL_VALUE, GAME_STATUS, TURN } from './constants.js';
+import {
+  getCellElementList,
+  getCurrentTurnElement,
+  getReplayButtonElement,
+  getGameStatusElement,
+  getCellElementAtIdx,
+} from './selectors.js';
+import { checkGameStatus } from './utils.js';
 
 /**
  * Global variables
  */
 let currentTurn = TURN.CROSS;
-let cellValues = new Array(9).fill('');
+let gameStatus = GAME_STATUS.PLAYING;
+let cellValues = new Array(25).fill('');
 
 function toggleTurn() {
   // toogle turn
@@ -19,18 +27,75 @@ function toggleTurn() {
   }
 }
 
+function updateGameStatus(newGameStatus) {
+  gameStatus = newGameStatus;
+
+  const gameStatusElement = getGameStatusElement();
+
+  if (gameStatus) gameStatusElement.textContent = gameStatus;
+}
+
+function showReplayButton() {
+  const replayButton = getReplayButtonElement();
+  if (replayButton) replayButton.classList.add('show');
+}
+
+function hideReplayButton() {
+  const replayButton = getReplayButtonElement();
+  if (replayButton) replayButton.classList.remove('show');
+}
+
+function highlightWinCells(winPositions) {
+  if (!Array.isArray(winPositions) || winPositions.length !== 5) {
+    throw new Error('Invalid win positions');
+  }
+
+  for (const position of winPositions) {
+    const cell = getCellElementAtIdx(position);
+    if (cell) cell.classList.add('win');
+  }
+}
+
 function handleCellClick(cell, index) {
   // check cell isClick
   const isClick = cell.classList.contains(TURN.CIRCLE) || cell.classList.contains(TURN.CROSS);
-  if (isClick) return;
+  // only allow to click if game is playing and that cell is not clicked yet
+  if (isClick || gameStatus !== GAME_STATUS.PLAYING) return;
 
   // set selected cell
   cell.classList.add(currentTurn);
 
+  // update cellValues
+  cellValues[index] = currentTurn === TURN.CIRCLE ? CELL_VALUE.CIRCLE : CELL_VALUE.CROSS;
+
+  // check game status
+  const game = checkGameStatus(cellValues);
+  switch (game.status) {
+    case GAME_STATUS.ENDED: {
+      // update game status
+      updateGameStatus(game.status);
+      showReplayButton();
+
+      // show replay button
+      break;
+    }
+    case GAME_STATUS.X_WIN:
+    case GAME_STATUS.O_WIN: {
+      // update game status
+      updateGameStatus(game.status);
+      // show replay button
+      showReplayButton();
+      // highlight win cells
+      highlightWinCells(game.winPositions);
+      break;
+    }
+
+    default:
+    // playing
+  }
+
   // toggle turn
   toggleTurn();
-
-  console.log('click', cell, index);
 }
 
 function initCellElementList() {
@@ -38,6 +103,41 @@ function initCellElementList() {
   cellElementList.forEach((cell, index) => {
     cell.addEventListener('click', () => handleCellClick(cell, index));
   });
+}
+
+function resetGame() {
+  // reset temp global vars
+  currentTurn = TURN.CROSS;
+  gameStatus = GAME_STATUS.PLAYING;
+  cellValues = cellValues.map(() => '');
+
+  // reset dom elements
+
+  // reset game status
+  updateGameStatus(GAME_STATUS.PLAYING);
+  // reset current turn
+  const currentTurnElement = getCurrentTurnElement();
+  if (currentTurnElement) {
+    currentTurnElement.classList.remove(TURN.CIRCLE, TURN.CROSS);
+    currentTurnElement.classList.add(TURN.CROSS);
+  }
+
+  // reset game board
+  const cellElementList = getCellElementList();
+  if (cellElementList) {
+    for (const cellElement of cellElementList) {
+      cellElement.className = '';
+    }
+  }
+  // hide replay button
+  hideReplayButton();
+}
+
+function initReplayButton() {
+  const replayButton = getReplayButtonElement();
+  if (replayButton) {
+    replayButton.addEventListener('click', resetGame);
+  }
 }
 
 /**
@@ -59,4 +159,7 @@ function initCellElementList() {
 (() => {
   // bind click event for all li elements
   initCellElementList();
+
+  // bind click event for replay button
+  initReplayButton();
 })();

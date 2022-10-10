@@ -22,7 +22,7 @@ ul {
 
   padding: 1rem;
   min-height: 100vh;
-  background: darkgreen;
+  background: #333;
 }
 
 .game {
@@ -33,7 +33,8 @@ ul {
 }
 
 .game .chalk-board > img {
-  width: 100%;
+  min-width: 680px;
+  min-height: 480px;
 }
 
 .game .overlay-content {
@@ -53,19 +54,19 @@ ul {
   display: flex;
   flex-flow: row wrap;
   margin: 8px auto 0 auto;
-  width: 150px;
+  width: 250px;
 }
 
 /* Board cell */
 .game .board-cells-list > li {
   position: relative;
-  width: 33.333333%;
+  width: 20%;
   height: 50px;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .game .board-cells-list > li.win {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Add hover effect on cell hover */
@@ -81,11 +82,11 @@ ul {
   cursor: default;
 }
 
-.game .board-cells-list > li:not(:nth-child(3n)) {
+.game .board-cells-list > li:not(:nth-child(5n)) {
   border-right: none;
 }
 
-.game .board-cells-list > li:nth-child(-n + 6) {
+.game .board-cells-list > li:nth-child(-n + 20) {
   border-bottom: none;
 }
 
