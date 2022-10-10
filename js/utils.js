@@ -35,7 +35,7 @@
 // }
 //
 
-import { CELL_VALUE, GAME_STATUS } from './constants.js';
+import { CELL_VALUE, GAME_STATUS } from "./constants.js";
 
 // Input: an array of 9 items
 // Output: an object as mentioned above
@@ -44,24 +44,65 @@ export function checkGameStatus(cellValues) {
   // Please feel free to add more helper function if you want.
   // It's not required to write everything just in this function.
   if (!Array.isArray(cellValues) || cellValues.length !== 25) {
-    throw new Error('Invalid cell vales');
+    throw new Error("Invalid cell vales");
   }
 
   const checkSetList = [
-    [0, 1, 2, 3, 4],
-    [5, 6, 7, 8, 9],
-    [10, 11, 12, 13, 14],
-    [15, 16, 17, 18, 19],
-    [20, 21, 22, 23, 24],
+    // row 1
+    [0, 1, 2],
+    [1, 2, 3],
+    [2, 3, 4],
+    // row 2
+    [5, 6, 7],
+    [6, 7, 8],
+    [7, 8, 9],
+    // row 3
+    [10, 11, 12],
+    [11, 12, 13],
+    [12, 13, 14],
+    // row 4
+    [15, 16, 17],
+    [16, 17, 18],
+    [17, 18, 19],
+    // row 5
+    [20, 21, 22],
+    [21, 22, 23],
+    [22, 23, 24],
+    // col 1
+    [0, 5, 10],
+    [5, 10, 15],
+    [10, 15, 20],
+    // col 2
+    [1, 6, 11],
+    [6, 11, 16],
+    [11, 16, 21],
+    // col 3
+    [2, 7, 12],
+    [7, 12, 17],
+    [12, 17, 22],
+    // col 4
+    [3, 8, 13],
+    [8, 13, 18],
+    [13, 18, 23],
+    // col 5
+    [4, 9, 14],
+    [9, 14, 19],
+    [14, 19, 24],
 
-    [0, 5, 10, 15, 20],
-    [1, 6, 11, 16, 21],
-    [2, 7, 12, 17, 22],
-    [3, 8, 13, 18, 23],
-    [4, 9, 14, 19, 24],
+    // diagonal row 5
+    [0, 6, 12],
+    [6, 12, 18],
+    [12, 18, 24],
 
-    [0, 6, 12, 18, 24],
-    [4, 8, 12, 16, 20],
+    [5, 11, 17],
+    [11, 17, 23],
+
+    [10, 16, 22],
+
+    [1, 7, 13],
+    [7, 13, 19],
+
+    [2, 8, 14],
   ];
 
   // win
@@ -69,25 +110,22 @@ export function checkGameStatus(cellValues) {
     const first = cellValues[set[0]];
     const second = cellValues[set[1]];
     const third = cellValues[set[2]];
-    const fourth = cellValues[set[3]];
-    const fifth = cellValues[set[4]];
 
-    return (
-      first !== '' && first === second && second === third && third === fourth && fourth === fifth
-    );
+    return first !== "" && first === second && second === third;
   });
 
   if (winSetIndex >= 0) {
     const winValueIndex = checkSetList[winSetIndex][1];
     const winValue = cellValues[winValueIndex];
     return {
-      status: winValue === CELL_VALUE.CIRCLE ? GAME_STATUS.O_WIN : GAME_STATUS.X_WIN,
+      status:
+        winValue === CELL_VALUE.CIRCLE ? GAME_STATUS.O_WIN : GAME_STATUS.X_WIN,
       winPositions: checkSetList[winSetIndex],
     };
   }
   // end
   // playing
-  const isEndGame = cellValues.filter((x) => x === '').length === 0;
+  const isEndGame = cellValues.filter((x) => x === "").length === 0;
   return {
     status: isEndGame ? GAME_STATUS.ENDED : GAME_STATUS.PLAYING,
     winPositions: [],

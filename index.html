@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>tic tac toe game | Easy Frontend</title>
 
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>tic tac toe game | Easy Frontend</title>
 
-  <body>
-    <section class="game-page">
-      <div class="game">
-        <div class="chalk-board">
-          <img src="images/chalk-board-bg.jpg" alt="Chalk board" />
-        </div>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 
-        <div class="overlay-content">
+<body>
+  <section class="game-page">
+    <div class="game">
+      <div class="chalk-board">
+        <img src="images/chalk-board-bg.jpg" alt="Chalk board" />
+      </div>
+
+      <div class="overlay-content">
+        <div class="game-description">
           <h1>Tic Tac Toe Game</h1>
 
-          <p class="game-status">Status: <span id="gameStatus">LOADING</span></p>
+          <p class="game-status">Status: <span id="gameStatus">PLAYING</span></p>
 
           <div class="game-details">
             <p class="current-turn">
@@ -27,44 +29,49 @@
               <span id="currentTurn" class="cross"></span>
             </p>
           </div>
+        </div>
+        <audio id="audioTic" src="./audios/tic.mp3"></audio>
+        <audio id="audioTac" src="./audios/tac.mp3"></audio>
+        <audio id="audioWin" src="./audios/win.mp3"></audio>
 
-          <div class="game-board">
-            <ul id="cellList" class="board-cells-list">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-            </ul>
-          </div>
+        <div class="game-board">
+          <ul id="cellList" class="board-cells-list">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
 
-          <div class="game-replay">
-            <button id="replayGame">Replay</button>
-          </div>
+        <div class="game-replay">
+          <button id="replayGame">Replay</button>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <script type="module" src="js/main.js"></script>
-  </body>
+  <script type="module" src="js/main.js"></script>
+</body>
+
 </html>

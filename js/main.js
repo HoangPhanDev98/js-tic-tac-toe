@@ -1,19 +1,19 @@
-import { CELL_VALUE, GAME_STATUS, TURN } from './constants.js';
+import { CELL_VALUE, GAME_STATUS, TURN } from "./constants.js";
 import {
   getCellElementList,
   getCurrentTurnElement,
   getReplayButtonElement,
   getGameStatusElement,
   getCellElementAtIdx,
-} from './selectors.js';
-import { checkGameStatus } from './utils.js';
+} from "./selectors.js";
+import { checkGameStatus } from "./utils.js";
 
 /**
  * Global variables
  */
 let currentTurn = TURN.CROSS;
 let gameStatus = GAME_STATUS.PLAYING;
-let cellValues = new Array(25).fill('');
+let cellValues = new Array(25).fill("");
 
 function toggleTurn() {
   // toogle turn
@@ -37,36 +37,45 @@ function updateGameStatus(newGameStatus) {
 
 function showReplayButton() {
   const replayButton = getReplayButtonElement();
-  if (replayButton) replayButton.classList.add('show');
+  if (replayButton) replayButton.classList.add("show");
 }
 
 function hideReplayButton() {
   const replayButton = getReplayButtonElement();
-  if (replayButton) replayButton.classList.remove('show');
+  if (replayButton) replayButton.classList.remove("show");
 }
 
 function highlightWinCells(winPositions) {
-  if (!Array.isArray(winPositions) || winPositions.length !== 5) {
-    throw new Error('Invalid win positions');
+  if (!Array.isArray(winPositions) || winPositions.length !== 3) {
+    throw new Error("Invalid win positions");
   }
 
   for (const position of winPositions) {
+    console.log(winPositions);
     const cell = getCellElementAtIdx(position);
-    if (cell) cell.classList.add('win');
+    if (cell) cell.classList.add("win");
   }
 }
 
 function handleCellClick(cell, index) {
   // check cell isClick
-  const isClick = cell.classList.contains(TURN.CIRCLE) || cell.classList.contains(TURN.CROSS);
+  const isClick =
+    cell.classList.contains(TURN.CIRCLE) || cell.classList.contains(TURN.CROSS);
   // only allow to click if game is playing and that cell is not clicked yet
   if (isClick || gameStatus !== GAME_STATUS.PLAYING) return;
 
   // set selected cell
   cell.classList.add(currentTurn);
 
+  if (currentTurn === TURN.CIRCLE) {
+    playTicAudio();
+  } else if (currentTurn === TURN.CROSS) {
+    playTacAudio();
+  }
+
   // update cellValues
-  cellValues[index] = currentTurn === TURN.CIRCLE ? CELL_VALUE.CIRCLE : CELL_VALUE.CROSS;
+  cellValues[index] =
+    currentTurn === TURN.CIRCLE ? CELL_VALUE.CIRCLE : CELL_VALUE.CROSS;
 
   // check game status
   const game = checkGameStatus(cellValues);
@@ -81,6 +90,8 @@ function handleCellClick(cell, index) {
     }
     case GAME_STATUS.X_WIN:
     case GAME_STATUS.O_WIN: {
+      // play sound win
+      playWinAudio();
       // update game status
       updateGameStatus(game.status);
       // show replay button
@@ -101,7 +112,7 @@ function handleCellClick(cell, index) {
 function initCellElementList() {
   const cellElementList = getCellElementList();
   cellElementList.forEach((cell, index) => {
-    cell.addEventListener('click', () => handleCellClick(cell, index));
+    cell.addEventListener("click", () => handleCellClick(cell, index));
   });
 }
 
@@ -109,7 +120,7 @@ function resetGame() {
   // reset temp global vars
   currentTurn = TURN.CROSS;
   gameStatus = GAME_STATUS.PLAYING;
-  cellValues = cellValues.map(() => '');
+  cellValues = cellValues.map(() => "");
 
   // reset dom elements
 
@@ -126,7 +137,7 @@ function resetGame() {
   const cellElementList = getCellElementList();
   if (cellElementList) {
     for (const cellElement of cellElementList) {
-      cellElement.className = '';
+      cellElement.className = "";
     }
   }
   // hide replay button
@@ -136,7 +147,7 @@ function resetGame() {
 function initReplayButton() {
   const replayButton = getReplayButtonElement();
   if (replayButton) {
-    replayButton.addEventListener('click', resetGame);
+    replayButton.addEventListener("click", resetGame);
   }
 }
 
@@ -163,3 +174,16 @@ function initReplayButton() {
   // bind click event for replay button
   initReplayButton();
 })();
+
+function playTicAudio() {
+  var audio = document.getElementById("audioTic");
+  audio.play();
+}
+function playTacAudio() {
+  var audio = document.getElementById("audioTac");
+  audio.play();
+}
+function playWinAudio() {
+  var audio = document.getElementById("audioWin");
+  audio.play();
+}
